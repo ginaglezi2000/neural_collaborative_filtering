@@ -1,9 +1,4 @@
 '''
-UserWarning: "`binary_crossentropy` received `from_logits=True`, but the `output` argument was produced by a sigmoid or softmax activation and thus does not represent logits. Was this intended?"
-  return dispatch_target(*args, **kwargs)
-'''
-
-'''
 Created on Aug 9, 2016
 Keras Implementation of Multi-Layer Perceptron (GMF) recommender model in:
 He Xiangnan et al. Neural Collaborative Filtering. In WWW 2017.  
@@ -12,29 +7,17 @@ He Xiangnan et al. Neural Collaborative Filtering. In WWW 2017.
 '''
 
 import numpy as np
-
-import tensorflow
-import tensorflow.keras
-# from tensorflow.keras import backend as K
-from tensorflow.keras import initializers    # In Keras 1 it was called initializations
-from tensorflow.keras.regularizers import L2    # In Keras 1 it was called activity_l2
-# ImportError: cannot import name 'Graph' from 'tensorflow.keras.models'
-# from tensorflow.keras.models import Sequential, Graph, Model
-from tensorflow.keras.models import Model
-# ModuleNotFoundError: No module named 'tensorflow.keras.layers.core'
-# from tensorflow.keras.layers.core import Dense, Lambda, Activation
-from tensorflow.keras.layers import Embedding, Input, Dense, Reshape, Flatten, Dropout
-from tensorflow.keras.layers import concatenate   # In Keras 1 there was merge
-# ImportError: cannot import name 'maxnorm' from 'tensorflow.keras.constraints'
-# from tensorflow.keras.constraints import maxnorm
-from tensorflow.keras.optimizers import Adagrad, Adam, SGD, RMSprop
-from tensorflow.keras.losses import BinaryCrossentropy
+from keras import initializers    # In Keras 1 it was called initializations
+from keras.regularizers import L2    # In Keras 1 it was called activity_l2
+from keras.models import Model
+from keras.layers import Embedding, Input, Dense, Flatten
+from keras.layers import concatenate   # In Keras 1 there was merge
+from keras.optimizers import Adagrad, Adam, SGD, RMSprop
+from keras.losses import BinaryCrossentropy
 from evaluate import evaluate_model
 from Dataset import Dataset
 from time import time
-import sys
 import argparse
-import multiprocessing as mp
 
 
 #################### Arguments ####################
@@ -146,13 +129,13 @@ if __name__ == '__main__':
     # Build model
     model = get_model(num_users, num_items, layers, reg_layers)
     if learner.lower() == "adagrad":
-        model.compile(optimizer=Adagrad(learning_rate=learning_rate), loss=BinaryCrossentropy(from_logits=True))
+        model.compile(optimizer=Adagrad(learning_rate=learning_rate), loss=BinaryCrossentropy(from_logits=False))
     elif learner.lower() == "rmsprop":
-        model.compile(optimizer=RMSprop(learning_rate=learning_rate), loss=BinaryCrossentropy(from_logits=True))
+        model.compile(optimizer=RMSprop(learning_rate=learning_rate), loss=BinaryCrossentropy(from_logits=False))
     elif learner.lower() == "adam":
-        model.compile(optimizer=Adam(learning_rate=learning_rate), loss=BinaryCrossentropy(from_logits=True))
+        model.compile(optimizer=Adam(learning_rate=learning_rate), loss=BinaryCrossentropy(from_logits=False))
     else:
-        model.compile(optimizer=SGD(learning_rate=learning_rate), loss=BinaryCrossentropy(from_logits=True))
+        model.compile(optimizer=SGD(learning_rate=learning_rate), loss=BinaryCrossentropy(from_logits=False))
 
     # Check Init performance
     t1 = time()
